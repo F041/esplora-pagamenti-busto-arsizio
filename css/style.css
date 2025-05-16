@@ -1,0 +1,292 @@
+/* Reset base e Stili Globali */
+body { 
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    margin: 0; 
+    background-color: #f0f0f0;
+    color: #333;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.container {
+    width: 95%;
+    max-width: 1400px; 
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* Header */
+.main-header {
+    background-color: #343a40;
+    color: #fff;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.main-header .container { display: flex; justify-content: flex-start; align-items: center; }
+.main-header .logo { font-size: 1.5em; margin: 0; font-weight: 500; }
+
+/* Controlli Pagina */
+.page-controls-bar {
+    background-color: #f7f7f7;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px; 
+}
+
+.page-controls-bar .list-info {
+    font-size: 0.95em;
+    font-weight: bold;
+    color: #333;
+    white-space: nowrap;
+    margin-right: 5px; 
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+.control-button-style {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.875em;
+    cursor: pointer;
+    /* background-color e color sono sovrascritti da stili specifici dei bottoni */
+    transition: background-color 0.2s, border-color 0.2s;
+    white-space: nowrap;
+    text-align: center;
+}
+/* Rimuoviamo l'hover generico se ogni bottone ha il suo specifico */
+/* .control-button-style:hover { background-color: #e0e0e0; border-color: #bbb; } */
+
+/* Dropdown "Aggiungi Filtro" */
+.filter-dropdown-container { position: relative; display: inline-block; }
+.dropdown-content {
+    display: none; 
+    position: absolute;
+    background-color: #fff;
+    min-width: 200px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    z-index: 10;
+    margin-top: 2px;
+}
+.dropdown-content a { color: black; padding: 8px 12px; text-decoration: none; display: block; font-size: 0.9em; }
+.dropdown-content a:hover { background-color: #f1f1f1; }
+.dropdown-content a.disabled { color: #aaa; cursor: not-allowed; background-color: #f9f9f9; }
+.dropdown-content a.disabled:hover { background-color: #f9f9f9; }
+
+.main-search-input {
+    flex-grow: 1;
+    padding: 7px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.search-button { /* Per il pulsante "Cerca" nella barra superiore */
+    background-color: #6c757d; 
+    color: white;
+    border-color: #545b62;
+    font-weight: bold;
+}
+.search-button:hover { background-color: #5a6268; border-color: #545b62; }
+
+
+/* --- SEZIONE CRUCIALE PER IL LAYOUT FILTRI E PULSANTI --- */
+#active-filters-area {
+    display: flex; /* Contenitore Flex per i filtri e il blocco pulsanti */
+    justify-content: space-between; /* Spinge i filtri a sinistra e il blocco pulsanti a destra */
+    align-items: flex-start; /* Allinea i blocchi figli in alto */
+    gap: 20px; /* Spazio tra il blocco dei filtri e il blocco dei pulsanti */
+    margin-bottom: 15px;
+    padding-top: 10px;
+}
+
+#active-filters-container {
+    display: flex;
+    flex-direction: column; /* I filtri attivi si impilano verticalmente */
+    gap: 10px; /* Spazio tra ogni riga di filtro attivo */
+    flex-grow: 1; /* Permette a questo contenitore di occupare lo spazio disponibile a sinistra */
+}
+
+.action-buttons-for-filters { /* Contenitore per i pulsanti Applica e Reimposta */
+    display: flex;
+    flex-direction: column; /* I pulsanti si impilano verticalmente */
+    gap: 8px; /* Spazio tra il pulsante Applica e Reimposta */
+    /* Non serve margin-left se gestito dal gap su #active-filters-area */
+    /* align-items: flex-start; /* Allinea i pulsanti a sinistra all'interno di questo blocco */
+    /* Se vuoi che i pulsanti occupino la stessa larghezza e siano centrati nel loro blocco: */
+    align-items: stretch; /* Fa sì che i pulsanti prendano la larghezza del contenuto più largo o una larghezza definita */
+}
+
+.apply-button {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+    font-weight: bold;
+}
+.apply-button:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+#reset-all-filters-button {
+    background-color: #6c757d;
+    color: white;
+    border-color: #545b62;
+}
+#reset-all-filters-button:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+/* --- FINE SEZIONE CRUCIALE --- */
+
+
+.active-filter-item { /* Singola riga di un filtro attivo (tag, operatore, input) */
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9em;
+}
+
+.filter-name-tag {
+    background-color: #6c757d;
+    color: white;
+    border: 1px solid #545b62;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 500;
+    font-size: 0.875em;
+}
+.filter-name-tag .remove-icon { font-weight: bold; font-size: 1.1em; line-height: 1; }
+.filter-name-tag:hover { background-color: #5a6268; }
+
+.filter-operator-select,
+.filter-value-input {
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.875em;
+    background-color: #fff;
+    box-sizing: border-box; /* Importante per il calcolo della larghezza con padding e border */
+}
+.filter-operator-select {
+    min-width: 110px; 
+}
+.filter-value-input {
+    width: 150px; 
+}
+.filter-value-input[type="number"] {
+    width: 100px;
+}
+.filter-value-input::placeholder { color: #999; }
+
+
+/* Status Messages */
+.status-messages { 
+    margin-bottom: 15px; background-color: #fff; padding: 10px 15px;
+    border: 1px solid #e3e3e3; border-radius: 4px; font-size: 0.9em;
+}
+.status-messages p { margin: 5px 0; }
+#error-message { color: #dc3545 !important; font-weight: bold; }
+
+/* Tabella */
+table { 
+    width: 100%; border-collapse: collapse; margin-bottom: 20px; 
+    background-color: #fff; border: 1px solid #ddd; font-size: 0.875em;
+}
+th, td { 
+    border-bottom: 1px solid #eee; border-left: 1px solid #eee; 
+    padding: 9px 10px; text-align: left; vertical-align: top; 
+}
+th:first-child, td:first-child { border-left: none; }
+th { 
+    background-color: #f7f7f7; font-weight: bold; color: #333;
+    border-bottom-width: 1px; border-bottom-color: #ddd;
+}
+table > thead > tr > th { border-top: none; }
+td { color: #212529; }
+#results-table th:nth-child(1), #results-table td:nth-child(1) { width: 60px; }
+#results-table th:nth-child(2), #results-table td:nth-child(2) { width: 90px; }
+#results-table th:nth-child(4), #results-table td:nth-child(4) { text-align: right; width: 110px; }
+#results-table th:nth-child(6), #results-table td:nth-child(6) { width: 90px; }
+#results-table td:nth-child(3) { min-width: 180px; }
+#results-table td:nth-child(5) { min-width: 220px; }
+
+/* Paginazione */
+.pagination {
+    margin-top: 20px; margin-bottom: 30px; text-align: center;
+    background-color: #fff; padding: 12px 15px; border: 1px solid #e3e3e3;
+    border-radius: 4px; display: flex; justify-content: center;
+    align-items: center; flex-wrap: wrap; gap: 5px;
+}
+.pagination button, .pagination input[type="number"], .pagination select {
+    margin: 0 2px; padding: 6px 10px; font-size: 0.9em;
+    border: 1px solid #ccc; border-radius: 4px; vertical-align: middle; 
+}
+.pagination input[type="number"]#page-input { width: 50px; text-align: center; }
+.pagination select#rows-per-page { padding-right: 25px; }
+.pagination button { background-color: #fff; color: #007bff; cursor: pointer; transition: background-color 0.15s ease-in-out; }
+.pagination button:hover { background-color: #e9ecef; }
+.pagination button:disabled { color: #6c757d; background-color: #f8f9fa; opacity: 0.65; cursor: not-allowed; }
+.pagination .page-indicator, .pagination .rows-per-page-label { 
+    padding: 6px 0; font-size: 0.9em; color: #495057; margin: 0 5px; 
+}
+.pagination .rows-per-page-label { margin-left: 15px; }
+
+.sortable-header {
+    cursor: pointer;
+    position: relative; /* Per posizionare la freccia */
+    user-select: none; /* Evita la selezione del testo al doppio click */
+}
+
+.sortable-header:hover {
+    background-color: #e8e8e8; /* Leggero feedback al hover */
+}
+
+.sort-arrow {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: 7px;
+    vertical-align: middle; /* Allinea la freccia con il testo */
+    opacity: 0.4; /* Freccia di default leggermente trasparente */
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.sortable-header.sort-asc .sort-arrow {
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 6px solid #333; /* Freccia su (▲) */
+    opacity: 1;
+    transform: translateY(-2px); /* Leggero aggiustamento verticale */
+}
+
+.sortable-header.sort-desc .sort-arrow {
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid #333; /* Freccia giù (▼) */
+    opacity: 1;
+    transform: translateY(1px); /* Leggero aggiustamento verticale */
+}
+
+/* Se nessun ordinamento attivo sulla colonna, potremmo mostrare entrambe le frecce o nessuna */
+/* Per semplicità, la freccia appare solo quando l'ordinamento è attivo su quella colonna */
+/* Oppure, potresti avere una freccia di default "non ordinato":
+.sortable-header:not(.sort-asc):not(.sort-desc) .sort-arrow::after {
+    content: '\2195'; // Freccia su e giù (↕), ma potrebbe essere grande
+    opacity: 0.4;
+    margin-left: 5px;
+}
+*/

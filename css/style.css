@@ -25,13 +25,13 @@ body {
 }
 .header-content { 
     display: flex;
-    align-items: center; /* Allinea verticalmente logo e blocco testi */
-    gap: 15px; /* Spazio tra logo e testi */
+    align-items: center; 
 }
 
 .header-logo {
     height: 80px; /* Altezza del logo, aggiusta se necessario */
-    width: auto;  /* Mantiene le proporzioni */
+    width: auto;
+    margin-right: 15px; /* Aggiunto spazio tra logo e blocco testo */
 }
 
 .header-text { /* Contenitore per titolo e sottotitolo */
@@ -322,3 +322,75 @@ td { color: #212529; }
     margin-left: 5px;
 }
 */
+
+.page-navigation {
+    margin-bottom: 20px;
+    font-size: 0.9em;
+}
+.page-navigation a {
+    text-decoration: none;
+    color: #007bff;
+}
+.page-navigation a:hover {
+    text-decoration: underline;
+}
+
+.download-links {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    display: grid; /* Usa grid per layout a colonne se vuoi */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Colonne responsive */
+    gap: 20px;
+}
+
+.download-item {
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.download-item h3 {
+    margin-top: 0;
+    color: #333;
+}
+.download-item p {
+    font-size: 0.95em;
+    color: #555;
+    line-height: 1.6;
+}
+
+.download-button {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+.download-button:hover {
+    background-color: #0056b3;
+}
+
+/* Stile per header-nav in index.html */
+.header-nav {
+    margin-left: auto; /*  QUESTA È LA CHIAVE per spingere a destra */
+    display: flex; /* Per allineare più link se ce ne fossero */
+    align-items: center;
+}
+.header-nav a {
+    color: #ced4da; /* Colore del testo del link */
+    text-decoration: none;
+    padding: 8px 15px; /* Padding per renderlo più cliccabile */
+    border-radius: 4px;
+    font-weight: 500; /* O il peso che preferisci */
+    font-size: 1.4em; /* Dimensione del testo del link */
+    transition: background-color 0.2s, color 0.2s;
+}
+.header-nav a:hover {
+    background-color: #495057; /* Sfondo al hover */
+    color: #fff; /* Testo bianco al hover */
+}

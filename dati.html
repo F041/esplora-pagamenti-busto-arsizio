@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Download Dati - Osservatorio Pagamenti Busto Arsizio</title>
+    <link rel="stylesheet" href="css/style.css"> <!-- Link allo stesso CSS -->
+    <style>
+        #pyodide-status {
+            margin-top: 10px;
+            font-style: italic;
+            color: #555;
+        }
+        .download-item button.download-button {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="container header-content">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Busto_Arsizio-Stemma.svg" alt="Stemma Comune Busto Arsizio" class="header-logo">
+            <div class="header-text">
+                <h1 class="main-title">Osservatorio Pagamenti <span class="location-name">Busto Arsizio</span></h1>
+                <p class="sub-title">Download Dati</p>
+            </div>
+             <nav class="header-nav">
+                <a href="index.html">Esplora Dati</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container page-content">
+        <nav class="page-navigation">
+            <a href="index.html">« Torna all'Esploratore Dati</a>
+        </nav>
+        
+        <h1>Scarica i Dati dell'Osservatorio</h1>
+        <p>Qui puoi scaricare i dati completi dell'Osservatorio Pagamenti del Comune di Busto Arsizio nei formati disponibili.</p>
+        
+        <div class="download-links">
+            <div class="download-item">
+                <h3>Database SQLite</h3>
+                <p>L'intero dataset in formato database SQLite. Utile per analisi più complesse e query dirette.</p>
+                <a href="pagamenti_slim.db" download="pagamenti_busto_arsizio.db" class="download-button">Scarica .db</a>
+            </div>
+            <div class="download-item">
+                <h3>Formato CSV (Comma Separated Values)</h3>
+                <p>I dati principali in formato CSV, generati al momento dal database più recente. Facilmente importabili in fogli di calcolo (Excel, Google Sheets, LibreOffice Calc) e altri software di analisi dati.</p>
+                <button id="download-csv-pyodide" class="download-button">Genera e Scarica .csv</button>
+                <p id="pyodide-status"></p> 
+            </div>
+        </div>
+        
+        <h2>Note sui Dati</h2>
+        <p><em>Ultimo aggiornamento del database: [INSERISCI QUI LA DATA DELL'ULTIMO AGGIORNAMENTO DEL FILE .DB]</em></p>
+        <p><em>Fonte: Comune di Busto Arsizio. [Aggiungi qui eventuali altre note sulla licenza dei dati, ecc.]</em></p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
+    <script>
+        const downloadCsvButton = document.getElementById('download-csv-pyodide');
+        const pyodideStatus = document.getElementById('pyodide-status');
+        let pyodideInstance = null;
+
+        async function loadPyodideAndPackages() {
+            if (pyodideInstance) return pyodideInstance; 
+            
+            pyodideStatus.textContent = 'Caricamento Pyodide e pacchetti (può richiedere un momento)...';
+            console.log('Inizio caricamento Pyodide...');
+            disableDownloadButton(true, 'Caricamento...');
+
+            try {
+                pyodideInstance = await loadPyodide();
+                console.log('Pyodide caricato. Caricamento pacchetti (pandas, sqlite3)...');
+                await pyodideInstance.loadPackage(['pandas', 'sqlite3']); // sqlite3 aggiunto qui
+                console.log('Pacchetti (pandas, sqlite3) caricati.');
+                pyodideStatus.textContent = 'Pyodide pronto.';
+                disableDownloadButton(false);
+                return pyodideInstance;
+            } catch (error) {
+                console.error('Errore durante il caricamento di Pyodide o pacchetti:', error);
+                pyodideStatus.textContent = `Errore caricamento Pyodide: ${error.message}`;
+                disableDownloadButton(false, 'Riprova Generazione CSV');
+                throw error;
+            }
+        }
+
+        function disableDownloadButton(disabled, text = null) {
+            if (downloadCsvButton) { // Aggiunto controllo per sicurezza
+                downloadCsvButton.disabled = disabled;
+                if (text) {
+                    downloadCsvButton.textContent = text;
+                } else if (!disabled) {
+                    downloadCsvButton.textContent = 'Genera e Scarica .csv';
+                }
+            }
+        }
+
+        if (downloadCsvButton) {
+            downloadCsvButton.addEventListener('click', async () => {
+                try {
+                    await loadPyodideAndPackages();
+                    
+                    pyodideStatus.textContent = 'Caricamento database per la conversione...';
+                    disableDownloadButton(true, 'Elaborazione...');
+
+                    const dbResponse = await fetch('pagamenti_slim.db');
+                    if (!dbResponse.ok) throw new Error(`Errore HTTP ${dbResponse.status} nel caricare il DB.`);
+                    const dbArrayBuffer = await dbResponse.arrayBuffer();
+                    
+                    const dbFileName = 'dati_pagamenti.db';
+                    pyodideInstance.FS.writeFile(dbFileName, new Uint8Array(dbArrayBuffer));
+                    pyodideStatus.textContent = 'Esecuzione script Python per conversione CSV...';
+
+                    const pythonScript = `
+import sqlite3
+import pandas as pd
+import io
+
+db_path = '${dbFileName}'
+csv_output_string = None
+
+try:
+    conn = sqlite3.connect(db_path)
+    df = pd.read_sql_query("SELECT * FROM pagamenti", conn) 
+    conn.close()
+
+    csv_buffer = io.StringIO()
+    df.to_csv(csv_buffer, index=False, encoding='utf-8-sig')
+    csv_output_string = csv_buffer.getvalue()
+    csv_buffer.close()
+    
+except Exception as e:
+    raise e
+
+csv_output_string
+                    `;
+
+                    let csvData = await pyodideInstance.runPythonAsync(pythonScript);
+                    
+                    pyodideStatus.textContent = 'Conversione CSV completata. Avvio download...';
+
+                    const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8-sig;' });
+                    const link = document.createElement('a');
+                    const url = URL.createObjectURL(blob);
+                    link.setAttribute('href', url);
+                    link.setAttribute('download', 'pagamenti_busto_arsizio.csv');
+                    link.style.visibility = 'hidden';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                    
+                    pyodideStatus.textContent = 'Download avviato!';
+                    disableDownloadButton(false);
+
+                } catch (error) {
+                    console.error('Errore durante la generazione del CSV con Pyodide:', error);
+                    pyodideStatus.textContent = `Errore durante la generazione del CSV: ${error.message || error}`;
+                    disableDownloadButton(false, 'Riprova Generazione CSV');
+                }
+            });
+        } else {
+            console.warn("Pulsante 'download-csv-pyodide' non trovato.");
+        }
+
+        // Opzionale: pre-carica Pyodide
+        // loadPyodideAndPackages().catch(err => console.warn("Pre-caricamento Pyodide fallito (opzionale):", err));
+
+    </script>
+</body>
+</html>

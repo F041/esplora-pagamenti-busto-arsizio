@@ -3,17 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Osservatorio Pagamenti Busto Arsizio</title>
+    
+    <!-- Google Fonts: Titillium Web -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Titolo della Pagina -->
+    <title>Osservatorio Pagamenti Busto Arsizio - Esplora Dati</title>
+    
+    <!-- Link CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <header class="main-header">
-        <div class="container">
-            <h1 class="logo">Osservatorio Pagamenti</h1>
+        <div class="container header-content">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Busto_Arsizio-Stemma.svg" alt="Stemma Comune Busto Arsizio" class="header-logo">
+            <div class="header-text">
+                <h1 class="main-title">Osservatorio Pagamenti <span class="location-name">Busto Arsizio</span></h1>
+                <p class="sub-title">Esplora Dati</p>
+            </div>
         </div>
     </header>
 
     <div class="container page-content">
+        <!-- ... (resto del contenuto: .page-controls-bar, #active-filters-area, tabella, paginazione) ... -->
+        <!-- Il contenuto interno non cambia rispetto alla versione precedente -->
         <div class="page-controls-bar">
             <div class="list-info">Elenco (<span id="total-rows-header">0</span>)</div>
             
@@ -63,7 +78,6 @@
         </table>
 
         <div class="pagination">
-            <!-- ... (come prima) ... -->
             <button id="first-page-button" title="Prima Pagina">⏮️</button>
             <button id="prev-page-button" title="Pagina Precedente">⬅️</button>
             <span class="page-indicator">

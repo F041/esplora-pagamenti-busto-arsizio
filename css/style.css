@@ -58,6 +58,25 @@ body {
     color: #ced4da; /* Grigio più chiaro */
 }
 
+.header-nav {
+    margin-left: auto; 
+    display: flex; 
+    align-items: center;
+}
+.header-nav a {
+    color: #ced4da; 
+    text-decoration: none;
+    padding: 8px 15px; 
+    border-radius: 4px;
+    font-weight: 500; 
+    font-size: 1.4em; 
+    transition: background-color 0.2s, color 0.2s;
+}
+.header-nav a:hover {
+    background-color: #495057; 
+    color: #fff; 
+}
+
 /* Controlli Pagina */
 .page-controls-bar {
     background-color: #f7f7f7;
@@ -256,6 +275,13 @@ td { color: #212529; }
 #results-table td:nth-child(3) { min-width: 180px; }
 #results-table td:nth-child(5) { min-width: 220px; }
 
+
+/* In style.css */
+.table-responsive-wrapper {
+    overflow-x: auto; /* Permette lo scroll orizzontale solo per la tabella */
+    width: 100%;     /* Assicura che il wrapper occupi lo spazio disponibile */
+    margin-bottom: 20px; 
+}
 /* Paginazione */
 .pagination {
     margin-top: 20px; margin-bottom: 30px; text-align: center;
@@ -328,8 +354,8 @@ td { color: #212529; }
     font-size: 0.9em;
 }
 .page-navigation a {
-    text-decoration: none;
-    color: #007bff;
+    margin-bottom: 10px;
+    font-size: 0.9em;
 }
 .page-navigation a:hover {
     text-decoration: underline;
@@ -375,22 +401,174 @@ td { color: #212529; }
     background-color: #0056b3;
 }
 
-/* Stile per header-nav in index.html */
-.header-nav {
-    margin-left: auto; /*  QUESTA È LA CHIAVE per spingere a destra */
-    display: flex; /* Per allineare più link se ce ne fossero */
-    align-items: center;
+/* --- RESPONSIVE DESIGN --- */
+@media (max-width: 900px) {
+    .container {
+        padding: 0 10px;
+    }
+    .main-header .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .header-logo {
+        width: 60px;
+        margin-bottom: 10px;
+    }
+    .main-title {
+        font-size: 1.5rem;
+    }
+    .sub-title {
+        font-size: 1.1rem;
+    }
+    .header-nav {
+        margin-top: 10px;
+        width: 100%;
+    }
+    .header-nav a {
+        display: block;
+        margin-bottom: 5px;
+    }
 }
-.header-nav a {
-    color: #ced4da; /* Colore del testo del link */
-    text-decoration: none;
-    padding: 8px 15px; /* Padding per renderlo più cliccabile */
-    border-radius: 4px;
-    font-weight: 500; /* O il peso che preferisci */
-    font-size: 1.4em; /* Dimensione del testo del link */
-    transition: background-color 0.2s, color 0.2s;
+@media (max-width: 600px) {
+    .container {
+        padding: 0 5px;
+    }
+    .main-header .header-content {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 5px;
+    }
+    .header-logo {
+        width: 45px;
+    }
+    .main-title {
+        font-size: 1.1rem;
+    }
+    .sub-title {
+        font-size: 0.95rem;
+    }
+    .download-links {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    .download-item {
+        padding: 12px;
+    }
+    .page-navigation {
+        margin-bottom: 10px;
+    }
+    .header-nav a {
+        font-size: 1rem;
+    }
 }
-.header-nav a:hover {
-    background-color: #495057; /* Sfondo al hover */
-    color: #fff; /* Testo bianco al hover */
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0 10px;
+    }
+
+    /* Header a colonna */
+    .main-header .header-content {
+        flex-direction: column;
+        align-items: center; /* Centra quando è a colonna */
+        text-align: center;
+        gap: 10px;
+    }
+    .header-logo {
+        height: 60px; /* Aggiusta se necessario */
+        margin-right: 0; /* Rimuovi margine quando a colonna */
+        margin-bottom: 5px;
+    }
+    .main-title {
+        font-size: 1.6em; /* Riduci un po' */
+    }
+    .sub-title {
+        font-size: 1.1em; /* Riduci un po' */
+    }
+    .header-nav {
+        margin-left: 0; /* Rimuovi margine auto */
+        margin-top: 10px;
+        width: auto; /* Lascia che si adatti al contenuto */
+    }
+    .header-nav a {
+        font-size: 0.9em; /* Riduci un po' il link Dati */
+        padding: 8px 12px;
+    }
+
+    /* Barra dei controlli a colonna */
+    .page-controls-bar {
+        flex-direction: column;
+        align-items: stretch; 
+    }
+    .page-controls-bar > * { 
+        margin-bottom: 8px; 
+        width: 100%; 
+        box-sizing: border-box;
+    }
+    .page-controls-bar .list-info {
+        margin-right: 0;
+        text-align: center;
+    }
+    .main-search-input {
+         min-width: 0; 
+    }
+
+    /* Filtri e pulsanti azione */
+    #active-filters-area {
+        flex-direction: column; /* Impila il blocco filtri e il blocco pulsanti */
+        align-items: stretch; /* Fa sì che entrambi i blocchi prendano la larghezza piena */
+    }
+    .action-buttons-for-filters {
+        margin-left: 0; /* Rimuovi margine quando impilato */
+        margin-top: 15px; /* Spazio sopra i pulsanti */
+        flex-direction: row; /* Pulsanti affiancati su mobile se c'è spazio */
+        justify-content: center; /* Centra i pulsanti affiancati */
+        /* align-items: stretch; /* Mantenuto per farli alti uguali se su righe diverse */
+    }
+     .action-buttons-for-filters button {
+        flex-grow: 1; /* Distribuisce lo spazio se affiancati */
+        text-align: center;
+    }
+
+    .filter-value-input {
+        width: 100%; /* Input dei filtri a larghezza piena */
+    }
+    .filter-value-input[type="number"] {
+        width: 100%; /* Anche per i numeri */
+    }
+     .active-filter-item {
+        flex-wrap: wrap; /* Permette agli elementi del filtro di andare a capo */
+    }
+}
+
+/* Smartphone piccoli (es. <= 480px) */
+@media (max-width: 480px) {
+    body {
+        font-size: 13px;
+    }
+    .main-title {
+        font-size: 1.4em;
+    }
+    .sub-title {
+        font-size: 1em;
+    }
+    .header-logo {
+        height: 50px;
+    }
+    
+    .download-links { /* Per la pagina dati.html */
+        grid-template-columns: 1fr; /* Una colonna per i link di download */
+        gap: 15px;
+    }
+    .download-item {
+        padding: 15px;
+    }
+
+    .action-buttons-for-filters {
+        flex-direction: column; /* Assicura che i pulsanti Applica/Reset siano impilati su schermi molto piccoli */
+    }
+    .action-buttons-for-filters button {
+        width: 100%; /* Pulsanti a larghezza piena */
+    }
 }

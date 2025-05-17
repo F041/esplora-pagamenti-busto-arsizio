@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Elemento per ordinamento
     const headerImporto = document.getElementById('header-importo');
 
-    const dbUrl = 'busto_pagamenti.db '; 
+    const dbUrl = 'busto_pagamenti.db'; 
     let db = null; 
     let currentQueryState = { 
         searchTerm: '',

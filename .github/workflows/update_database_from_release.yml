@@ -1,0 +1,65 @@
+name: Aggiorna Database da Release Esterna
+
+on:
+  workflow_dispatch: # Permette di avviare il workflow manualmente dalla UI di GitHub Actions
+  schedule:
+    # Esegui ogni primo del mese alle 04:00 UTC 
+    # Questo orario dovrebbe essere *dopo* l'orario in cui ti aspetti che il repo produttore crei un nuovo release (0 3 1 * *)
+    - cron: '0 4 1 * *'
+
+jobs:
+  fetch_and_update_db:
+    runs-on: ubuntu-latest
+    # Definisci i permessi necessari per il GITHUB_TOKEN per fare commit e push
+    permissions:
+      contents: write # Permette di committare e pushare al repository
+
+    steps:
+      - name: Checkout codice esploratore (questo repo)
+        uses: actions/checkout@v4
+
+      - name: Definisci nome file e URL del database
+        id: db_info
+        run: |
+          # Il nome del file come vuoi salvarlo nel tuo repo esploratore
+          echo "DB_FILENAME=pagamenti_slim.db" >> $GITHUB_OUTPUT 
+          # URL diretto per scaricare l'asset .db dall'ULTIMO release del repo produttore
+          # NOTA: GitHub reindirizza automaticamente da /latest/download/... al tag dell'ultimo release effettivo
+          echo "DB_URL=https://github.com/F041/osservatorio-statistico-bustoarsizio-tubatura-dati/releases/latest/download/busto_pagamenti.db" >> $GITHUB_OUTPUT
+          # Se vuoi puntare a un tag specifico invece che a "latest", modifica l'URL qui sopra.
+          # Esempio per un tag specifico (come quello che mi hai dato):
+          # echo "DB_URL=https://github.com/F041/osservatorio-statistico-bustoarsizio-tubatura-dati/releases/download/db-v2025-05-17/busto_pagamenti.db" >> $GITHUB_OUTPUT
+
+      - name: Scarica ultimo database dalla release
+        run: |
+          echo "Scaricamento database da ${{ steps.db_info.outputs.DB_URL }}..."
+          # Usiamo curl con -L per seguire i reindirizzamenti (importante per /latest/)
+          # e -o per specificare il nome del file di output
+          curl -L -o ${{ steps.db_info.outputs.DB_FILENAME }} "${{ steps.db_info.outputs.DB_URL }}"
+          if [ $? -ne 0 ]; then
+            echo "Errore durante lo scaricamento del database."
+            exit 1
+          fi
+          echo "Database scaricato come ${{ steps.db_info.outputs.DB_FILENAME }}"
+          ls -lh ${{ steps.db_info.outputs.DB_FILENAME }} # Mostra info sul file scaricato
+
+      # Non c'è bisogno di generare CSV qui se Pyodide lo fa nel browser
+
+      - name: Committa e Pusha il database (se modificato)
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          # Aggiungi il file .db (il nome è quello definito in DB_FILENAME)
+          git add ${{ steps.db_info.outputs.DB_FILENAME }}
+          
+          # Controlla se ci sono modifiche al file tracciato prima di committare
+          if git diff --staged --quiet; then
+            echo "Nessun cambiamento nel database (${{ steps.db_info.outputs.DB_FILENAME }}) da committare."
+          else
+            echo "Database (${{ steps.db_info.outputs.DB_FILENAME }}) modificato. Creazione commit..."
+            git commit -m "Aggiornamento automatico database da release esterna (${{ steps.db_info.outputs.DB_FILENAME }})"
+            echo "Push delle modifiche..."
+            git push
+            echo "Push completato."
+          fi

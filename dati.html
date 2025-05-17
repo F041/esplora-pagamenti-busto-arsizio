@@ -56,8 +56,8 @@
         </div>
         
         <h2>Note sui Dati</h2>
-        <p><em>Ultimo aggiornamento del database: [INSERISCI QUI LA DATA DELL'ULTIMO AGGIORNAMENTO DEL FILE .DB]</em></p>
-        <p><em>Fonte: Comune di Busto Arsizio. [Aggiungi qui eventuali altre note sulla licenza dei dati, ecc.]</em></p>
+        <p><em>Ultimo aggiornamento del database: <span id="db-last-update-date">[Caricamento data...]</span></em></p>
+        <p><em>Fonte: Comune di Busto Arsizio. Creative Commons Attribuzione 4.0 Internazionale (CC BY 4.0)</em></p>
     </div>
 
     <script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
@@ -172,5 +172,31 @@ csv_output_string
         // loadPyodideAndPackages().catch(err => console.warn("Pre-caricamento Pyodide fallito (opzionale):", err));
 
     </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const updateDateElement = document.getElementById('db-last-update-date');
+    
+                if (updateDateElement) {
+                    fetch('last_update.json') // Assicurati che il percorso sia corretto
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Errore nel caricare il file della data di aggiornamento.');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data && data.lastUpdate) {
+                                updateDateElement.textContent = data.lastUpdate;
+                            } else {
+                                updateDateElement.textContent = 'N/D'; // Non disponibile
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Errore fetch data aggiornamento:', error);
+                            updateDateElement.textContent = 'Errore nel caricare la data';
+                        });
+                }
+            });
+        </script>
 </body>
 </html>

@@ -572,3 +572,13 @@ td { color: #212529; }
         width: 100%; /* Pulsanti a larghezza piena */
     }
 }
+.main-footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background: #f8f9fa;
+    text-align: center;
+    border-top: 1px solid #e0e0e0;
+    z-index: 100;
+}

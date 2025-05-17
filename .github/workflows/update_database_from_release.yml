@@ -22,7 +22,7 @@ jobs:
         id: db_info
         run: |
           # Il nome del file come vuoi salvarlo nel tuo repo esploratore
-          echo "DB_FILENAME=pagamenti_slim.db" >> $GITHUB_OUTPUT 
+          echo "DB_FILENAME=busto_pagamenti.db" >> $GITHUB_OUTPUT 
           # URL diretto per scaricare l'asset .db dall'ULTIMO release del repo produttore
           # NOTA: GitHub reindirizza automaticamente da /latest/download/... al tag dell'ultimo release effettivo
           echo "DB_URL=https://github.com/F041/osservatorio-statistico-bustoarsizio-tubatura-dati/releases/latest/download/busto_pagamenti.db" >> $GITHUB_OUTPUT
